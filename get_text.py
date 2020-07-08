@@ -12,14 +12,16 @@ import json
 from datetime import datetime, date
 import re
 
-
-urls = np.load("data/urls/topic_pages.npy")
+additional_fn = "client-plugins_"
+urls = np.load("data/urls/"+additional_fn+"topic_pages.npy")
 all_posts = []
 # For each page of topics
 for i in range(len(urls)):
     topic_messages = []
     # Get the topic
     for j in range(len(urls[i])):
+        if j == 7 and i == 0:
+            print("okay")
         page_messages = []
         # For each page of posts
         for k in range(len(urls[i][j])):
@@ -32,10 +34,23 @@ for i in range(len(urls)):
             messages = soup.findAll("blockquote", {"class": "messageText"})
             text_messages = []
             for n in range(len(messages)):
-                text_messages.append(messages[n].text)
+                if n == 7 and j == 7 and i == 0:
+                    print("okay")
+                divs_to_decompose = messages[n].findAll("div")
+                for l in range(len(divs_to_decompose)):
+                    if len(divs_to_decompose[l].text) > 0:
+                        print("Removed block text", divs_to_decompose[l].text)
+                    divs_to_decompose[l].decompose()
+                # Remove any one-word posts by the original author to get rid of bumps etc
+                if len(messages[n].text.split(" ")) == 1 and text_names[n] == text_names[0]:
+                    print(messages[n].text)
+                    continue
+                else:
+                    text_messages.append(messages[n].text)
+
             print(i, "/", len(urls),  j, "/", len(urls[i]), k, "/",  len(urls[i][j]), text_messages)
             page_messages.append(text_messages)
         topic_messages.append(page_messages)
     all_posts.append(topic_messages)
 
-np.save("data/text/all_posts.npy", all_posts)
+np.save("data/text/"+additional_fn+"all_posts.npy", all_posts)

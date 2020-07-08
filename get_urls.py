@@ -93,6 +93,7 @@ def getAllTopicPages(topic_roots):
         topic_pages.append(all_topic_pages)
     return topic_pages
 
+
 forum_pages = u.exists("data/urls/buy-low-level_forum_pages.npy", getForumPages, False, ["https://www.sythe.org/forums/oldschool-runescape-low-level-accounts/"])
 topic_roots = u.exists("data/urls/buy-low-level_topic_roots.npy", getAllTopicRoots, False, [forum_pages])
 topic_pages = u.exists("data/urls/buy-low-level_topic_pages.npy", getAllTopicPages, False, [topic_roots])
